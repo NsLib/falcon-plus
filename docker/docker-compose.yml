@@ -1,0 +1,60 @@
+version: "3"
+services:
+    falcon-plus:
+        image: local/open-falcon-hacking:latest
+        command: /bin/sh /go/src/github.com/open-falcon/falcon-plus/run.sh
+        volumes:
+            - ../../../../../:/go
+            - ./config:/config
+        ports:
+            - 8080:8080
+            - 6030:6030
+            - 8433:8433
+        environment:
+            - TZ='Asia/Taipei'
+        stdin_open: true
+        tty: true
+        security_opt:
+            - seccomp:unconfined
+        working_dir: /go/src/github.com/open-falcon/falcon-plus/bin
+        depends_on:
+            - mysql
+    mysql:
+        hostname: docker-mysql
+        image: mysql:5.7
+        user: "1000:50"
+        labels:
+            owl: mysql
+        ports:
+            - 3306:3306
+        volumes:
+            - ../scripts/mysql/db_schema:/docker-entrypoint-initdb.d
+            - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+            - ../../falcon-mysql-volume:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=password
+            - TZ='Asia/Taipei'
+    dashboard:
+        hostname: docker-dashboard
+        image: falcon-dashboard:v1.0
+        ports:
+            - 8081:8081
+        stdin_open: true
+        tty: true
+        security_opt:
+            - seccomp:unconfined
+        environment:
+            - TZ='Asia/Taipei'
+            - API_ADDR=http://falcon-plus:8080/api/v1
+            - PORTAL_DB_HOST=mysql
+            - PORTAL_DB_PORT=3306
+            - PORTAL_DB_USER=root
+            - PORTAL_DB_PASS=password
+            - PORTAL_DB_NAME=falcon_portal
+            - ALARM_DB_HOST=mysql
+            - ALARM_DB_PORT=3306
+            - ALARM_DB_USER=root
+            - ALARM_DB_PASS=password
+            - ALARM_DB_NAME=alarms
+        depends_on:
+            - falcon-plus
