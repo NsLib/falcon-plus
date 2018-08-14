@@ -1,7 +1,7 @@
 version: "3"
 services:
     falcon-plus:
-        image: local/open-falcon-hacking:latest
+        image: local/open-falcon-dev:latest
         command: /bin/sh /go/src/github.com/open-falcon/falcon-plus/run.sh
         volumes:
             - ../../../../../:/go

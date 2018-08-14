@@ -6,12 +6,7 @@ ENV PATH /go/bin:$PATH
 
 RUN mkdir -p /go && \
         chmod -R 777 /go && \
-        yum -y install git golang make && \
+        yum -y install git golang && \
         yum clean all
-
-ADD . /go/src/github.com/open-falcon/falcon-plus
-WORKDIR /go/src/github.com/open-falcon/falcon-plus
-
-RUN make install
 
 WORKDIR /go
