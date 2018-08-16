@@ -40,6 +40,10 @@ func restart(c *cobra.Command, args []string) error {
 		args = g.AllModulesInOrder
 	}
 
+	// open-falcon restart agent
+	// 相当于执行:
+	//		open-falcon stop agent
+	//		open-falcon start agent
 	for _, moduleName := range args {
 		if err := stop(c, []string{moduleName}); err != nil {
 			return err
