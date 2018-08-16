@@ -40,10 +40,24 @@ func check(c *cobra.Command, args []string) error {
 	}
 
 	for _, moduleName := range args {
+		// 检测模块是否存在
 		if !g.HasModule(moduleName) {
 			return fmt.Errorf("%s doesn't exist", moduleName)
 		}
 
+		/*
+./open-falcon check
+	falcon-graph         UP           53007
+	  falcon-hbs         UP           53014
+	falcon-judge         UP           53020
+ falcon-transfer         UP           53026
+   falcon-nodata         UP           53032
+falcon-aggregator         UP           53038
+	falcon-agent         UP           53044
+  falcon-gateway       DOWN           -
+	  falcon-api         UP           53056
+	falcon-alarm         UP           53063
+		 */
 		if g.IsRunning(moduleName) {
 			fmt.Printf("%20s %10s %15s \n", g.ModuleApps[moduleName], "UP", g.Pid(moduleName))
 		} else {
