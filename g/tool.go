@@ -88,12 +88,16 @@ func HasModule(name string) bool {
 }
 
 func setPid(name string) {
+	// 使用 `pgrep -f falcon-agent` 来获取进程pid
+	// PS: 这里应该判断进程没有运行的情况, 以及同名程序的情况
 	output, _ := exec.Command("pgrep", "-f", ModuleApps[name]).Output()
 	pidStr := strings.TrimSpace(string(output))
 	PidOf[name] = pidStr
 }
 
 func Pid(name string) string {
+	// 模块pid没有被设置的话, 检查当前运行的进程中是否有对应模块, 并写入pid文件
+	// PS: 其实返回值应该是 （string, error) 形式, 这个实现不严谨, 异常情况下报错会让用户看不懂
 	if PidOf[name] == "<NOT SET>" {
 		setPid(name)
 	}

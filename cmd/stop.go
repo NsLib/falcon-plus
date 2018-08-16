@@ -43,15 +43,19 @@ func stop(c *cobra.Command, args []string) error {
 	}
 
 	for _, moduleName := range args {
+		// 检测模块是否存在
 		if !g.HasModule(moduleName) {
 			return fmt.Errorf("%s doesn't exist", moduleName)
 		}
 
+		// 模块没有运行则打印信息并跳过
 		if !g.IsRunning(moduleName) {
 			fmt.Print("[", g.ModuleApps[moduleName], "] down\n")
 			continue
 		}
 
+		// 以 `open-falcon stop agent` 来举例:
+		// 		kill -TERM <从pid文件中读取的模块pid>
 		cmd := exec.Command("kill", "-TERM", g.Pid(moduleName))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
